@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Which Disease Are You?</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f0f8ff;
+                padding: 20px;
+            }
+            .quiz-container {
+                background-color: white;
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+                max-width: 600px;
+                margin: auto;
+            }
+            h1 {
+                text-align: center;
+                color: #333;
+            }
+            .question {
+                font-size: 1.2em;
+                margin: 10px 0;
+            }
+            .answers {
+                margin: 10px 0;
+            }
+            button {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 10px;
+                font-size: 1em;
+                cursor: pointer;
+                width: 100%;
+            }
+            button:hover {
+                background-color: #45a049;
+            }
+            .result {
+                font-size: 1.5em;
+                margin-top: 20px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+    
+    <div class="quiz-container">
+        <h1>Which Disease Are You?</h1>
+    
+        <form id="quizForm">
+            <div class="question">
+                <label for="question1">Question 1: How do you usually feel in the mornings?</label><br>
+                <input type="radio" name="q1" value="Tired"> Tired<br>
+                <input type="radio" name="q1" value="Energetic"> Energetic<br>
+                <input type="radio" name="q1" value="Neutral"> Neutral<br>
+            </div>
+    
+            <div class="question">
+                <label for="question2">Question 2: How often do you experience headaches?</label><br>
+                <input type="radio" name="q2" value="Rarely"> Rarely<br>
+                <input type="radio" name="q2" value="Sometimes"> Sometimes<br>
+                <input type="radio" name="q2" value="Frequently"> Frequently<br>
+            </div>
+    
+            <div class="question">
+                <label for="question3">Question 3: How would you describe your energy levels during the day?</label><br>
+                <input type="radio" name="q3" value="Low"> Low<br>
+                <input type="radio" name="q3" value="High"> High<br>
+                <input type="radio" name="q3" value="Medium"> Medium<br>
+            </div>
+    
+            <div class="question">
+                <label for="question4">Question 4: Do you have a constant cough?</label><br>
+                <input type="radio" name="q4" value="Yes"> Yes<br>
+                <input type="radio" name="q4" value="No"> No<br>
+            </div>
+    
+            <button type="button" onclick="showResult()">Submit</button>
+        </form>
+    
+        <div id="result" class="result"></div>
+    </div>
+    
+    <script>
+        function showResult() {
+            const form = document.getElementById('quizForm');
+            const q1 = form.q1.value;
+            const q2 = form.q2.value;
+            const q3 = form.q3.value;
+            const q4 = form.q4.value;
+            let result = '';
+    
+            if (q1 === 'Tired' && q2 === 'Frequently' && q3 === 'Low' && q4 === 'Yes') {
+                result = "You are most likely to have a Chronic Fatigue Syndrome!";
+            } else if (q1 === 'Energetic' && q2 === 'Rarely' && q3 === 'High' && q4 === 'No') {
+                result = "You are healthy and full of energy!";
+            } else if (q2 === 'Sometimes' && q3 === 'Medium') {
+                result = "You might have a mild form of Migraine.";
+            } else {
+                result = "Your results are inconclusive, but you seem to be in good health!";
+            }
+    
+            document.getElementById('result').innerText = result;
+        }
+    </script>
+    
+    </body>
+
+</html>
