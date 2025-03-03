@@ -435,6 +435,7 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(255, 255, 255, 0.8);
   margin: 0;
 }
+
 .search_container {
   margin-top: 80px; 
   display: flex;
@@ -445,7 +446,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .search_bar {
   width: 100%;
-  max-width: 900px; 
+  flex: 1;
+  max-width: 900px;
   border-radius: 8px;
   background-color: white; 
   padding: 0; 
@@ -475,19 +477,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .filter-btn button {
-  padding: 10px 20px; 
+  padding: 14px 20px; 
   font-size: 18px; 
-  margin-right: 10px;
+  margin: 0px;
+}
+
+.filter-btn .btn .btn-primary {
+  margin-top: 0px;
+  position: relative;
 }
 
 .filter-dropdown {
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 45%;
+  right: 0%;
+  transform: translateX(-50%) translateX(85px);
   margin-top: 5px; 
-  visibility: hidden; 
-  opacity: 0; 
+  display: none;
   transition: visibility 0.3s, opacity 0.3s; 
   background-color: #ffffff; 
   color: grey; 
@@ -498,10 +504,6 @@ h1, h2, h3, h4, h5, h6 {
   width: 280px; 
 }
 
-#filter-btn.is-open + .filter-dropdown {
-  visibility: visible;
-  opacity: 1;
-}
 
 .filter-dropdown select,
 .filter-dropdown input {
@@ -509,14 +511,44 @@ h1, h2, h3, h4, h5, h6 {
   color: grey;
 }
 
-.filter-btn .btn-primary {
-  margin-top: 10px;
-  
+#filter-btn {
+  border-radius: 0px 3px 3px 0px;
 }
+
+#filter-btn.is-open + #filter-dropdown {
+  display: block;
+}
+
 #filter-btn.is-open {
   background-color: #444; 
   color: white; 
 }
+
+.submit-btn button {
+  padding: 14px 20px; 
+  font-size: 18px; 
+  margin: 0px;
+}
+
+
+
+.error-message {
+    color: red;
+    margin-top: 5px; 
+    display: none; 
+}
+
+.shake {
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
 
 .slant {
   position: absolute;

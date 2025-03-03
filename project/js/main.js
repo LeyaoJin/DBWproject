@@ -463,105 +463,125 @@
 
 
 }());
+
+
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM fully loaded");
+    console.log("✅ JS loaded correctly");
+
+    // Check for error in the URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorMessage = urlParams.get('error');
+    
+    if (errorMessage) {
+        // Show the error if there's one in the URL
+        showError(decodeURIComponent(errorMessage));
+    }
 
     window.handleFilterChange = function() {
         const filterInput = document.getElementById('filter-input');
         const filterType = document.getElementById('filter-type').value;
 
-        if (filterType === 'year') {
-            filterInput.placeholder = 'Enter year (e.g., 2022)';
-        } else {
-            filterInput.placeholder = 'Enter country (e.g., USA)';
-        }
+        filterInput.placeholder = filterType === 'year'
+            ? 'Enter year (e.g., 2022)'
+            : 'Enter country (e.g., USA)';
     };
 
-    window.applyFilter = function() {
-        const searchQuery = document.getElementById('search-bar').value;
-        const filterType = document.getElementById('filter-type').value;
-        const filterValue = document.getElementById('filter-input').value;
+    window.applyFilter = function(event) {
+        if (event) event.preventDefault();
 
-        console.log('Search:', searchQuery, 'Filter:', filterType, 'Value:', filterValue);
+        const searchQuery = document.getElementById('search-bar').value.trim();
+        const filterType = document.getElementById('filter-type').value;
+        const filterValue = document.getElementById('filter-input').value.trim();
+
+        console.log('🔍 Search:', searchQuery, '🧰 Filter:', filterType, '📊 Value:', filterValue);
+
+        if (!searchQuery) return showError('Please enter a search term.');
+        // If you have a list of valid terms or want to check some condition, do it here
+        // For example, replace this with your server-side validation if you want
+
+        hideError();
+        
+        // Instead of using AJAX or form submission directly, we will add query parameters
+        const form = document.querySelector('form');
+        const actionUrl = form.action;
+        
+        const queryParams = new URLSearchParams({
+            query: searchQuery, // Adding the query to the form submission
+            'filter-type': filterType,  // Optional filter type
+            'filter-value': filterValue // Optional filter value
+        });
+
+        // Redirect to the same page with the query parameters for PHP to handle
+        window.location.href = `${actionUrl}?${queryParams.toString()}`;
     };
 
     const filterBtn = document.getElementById('filter-btn');
     const dropdown = document.getElementById('filter-dropdown');
+    const searchBar = document.getElementById('search-bar');
+
+    let errorMessageElement = document.getElementById('error-message');
+    if (!errorMessageElement) {
+        errorMessageElement = document.createElement('div');
+        errorMessageElement.id = 'error-message';
+        errorMessageElement.style.color = 'red';
+        errorMessageElement.style.fontSize = '14px';
+        errorMessageElement.style.fontWeight = 'normal';
+        errorMessageElement.style.marginTop = '0px'; 
+        errorMessageElement.style.marginLeft = '140px';
+        errorMessageElement.style.display = 'none';
+        errorMessageElement.style.alignSelf = 'flex-start';
+
+        const searchBarContainer = searchBar.closest('.search_bar');
+        searchBarContainer.insertAdjacentElement('afterend', errorMessageElement);
+    }
+
+    function showError(message) {
+        errorMessageElement.textContent = message;
+        errorMessageElement.style.display = 'block';
+        searchBar.classList.add('shake');
+        setTimeout(() => searchBar.classList.remove('shake'), 300);
+    }
+
+    function hideError() {
+        errorMessageElement.style.display = 'none';
+    }
 
     function toggleFilter(event) {
         event.stopPropagation();
-
-        const isVisible = dropdown.style.visibility === 'visible';
-
-        if (isVisible) {
-            hideDropdown();
-        } else {
-            showDropdown();
-        }
+        const isVisible = dropdown.style.display === 'block';
+        isVisible ? hideDropdown() : showDropdown();
     }
 
-    function showDropdown() {
-        dropdown.style.visibility = 'visible';
-        dropdown.style.opacity = '1';
+   function showDropdown() {
+        dropdown.style.display = 'block'; // Mostrar el dropdown
         filterBtn.classList.add('is-open');
     }
 
     function hideDropdown() {
-        dropdown.style.visibility = 'hidden';
-        dropdown.style.opacity = '0';
+        dropdown.style.display = 'none'; // Ocultar el dropdown
         filterBtn.classList.remove('is-open');
     }
 
-    if (filterBtn) {
-        filterBtn.addEventListener('click', function(event) {
-            toggleFilter(event);
 
-            if (dropdown.style.visibility === 'hidden') {
-                filterBtn.blur();
-            }
-        });
+    if (filterBtn) {
+        filterBtn.addEventListener('click', toggleFilter);
     }
 
-    document.addEventListener('click', function() {
-        hideDropdown();
-    });
-
+    document.addEventListener('click', hideDropdown);
     dropdown.addEventListener('click', function(event) {
         event.stopPropagation();
     });
 
     const searchZone = document.querySelector('.search_zone');
     if (searchZone) {
-        searchZone.style.display = 'flex';
-        searchZone.style.flexDirection = 'row';
-        searchZone.style.alignItems = 'center';
-        searchZone.style.gap = '10px';
+        Object.assign(searchZone.style, {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: '10px',
+        });
     }
 
-    if (filterBtn) {
-        filterBtn.style.marginLeft = '10px';
-    }
-    
-    function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+    if (filterBtn) filterBtn.style.marginLeft = '10px';
 
-        if (username === "" || password === "") {
-            alert("Please enter both username and password.");
-            return;
-            }
-
-        // Here you would typically send the data to your backend for verification
-        // For now, we are just checking hardcoded values for demonstration
-        if (username === "user" && password === "password123") {
-            alert("Login successful!");
-            window.location.href = "map.html";  // Redirect to the map page after successful login
-        } else {
-            alert("Invalid credentials. Please try again.");
-        }
-    }
 });
-
-
-
-
