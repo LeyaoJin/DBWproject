@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infectious Disease Interactive Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #navbar {
+            background: #333;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            flex-wrap: wrap;
+            box-sizing: border-box;
+        }
+        #navbar h1 {
+            font-size: 18px;
+            margin: 0;
+            white-space: nowrap;
+        }
+        #navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        #navbar ul li {
+            margin-left: 10px;
+        }
+        #navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 5px;
+        }
+        #map {
+            position: absolute;
+            top: 50px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <h1>Infectious Disease Interactive Map</h1>
+        <ul>
+            <li><a href="javascript:void(0);" onclick="location.reload();">Reload Map</a></li>
+        </ul>
+    </nav>
+    <div id="map"></div>
+    
+    <!-- Load External Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/map.js"></script>  <!-- Loads the main map script -->
+</body>
+</html>
