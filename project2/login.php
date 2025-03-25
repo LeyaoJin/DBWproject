@@ -22,8 +22,11 @@
             $hashed_password = $row['password'];
             // If the user exists, we will check the password is correct. 
             if(password_verify($password, $hashed_password)){
-                // Redirect to USER PAGE 
-                
+                // Redirect to user page 
+                session_start();
+                $_SESSION['email'] = $email; 
+                header("Location: personal.php");
+                exit();
             }
             else{
                 $error = "Username or password is incorrect.";

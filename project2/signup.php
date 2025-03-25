@@ -36,7 +36,11 @@
             $userInfo->bind_param("sssssssss", $username, $email, $hashedPassword, $name, $surname, $education, $gender, $birth, $role);
             
             if ($userInfo->execute()) {
-                // To user page :)
+                // To user page 
+                session_start();
+                $_SESSION['email'] = $email; 
+                header("Location: personal.php");
+                exit();
             } else {
                 $error = "Error: " . $stmt->error;
             }
