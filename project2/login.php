@@ -2,13 +2,13 @@
     include 'config.php';
 	if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         // Here get the username and password given by the user.
-        $username = trim($_POST['username']);
+        $email = trim($_POST['email']);
         $password = trim($_POST['password']);
         $error = "";
 
         // Here we prepare and perform the SQL query.
-        $userQuery = $conn -> prepare("SELECT password FROM users WHERE username = ?");
-        $userQuery -> bind_param("s", $username);
+        $userQuery = $conn -> prepare("SELECT password FROM users WHERE email = ?");
+        $userQuery -> bind_param("s", $email);
         $userQuery -> execute();
         $userResult = $userQuery -> get_result();
 
@@ -22,8 +22,8 @@
             $hashed_password = $row['password'];
             // If the user exists, we will check the password is correct. 
             if(password_verify($password, $hashed_password)){
-                // Here we should redirect to either the serch engine or a personal page with the last queries??
-                header("Location: temp_file2.php");
+                // Redirect to USER PAGE 
+                
             }
             else{
                 $error = "Username or password is incorrect.";
@@ -112,21 +112,22 @@
             <div class="login-container">
                 <h1>Login to Infectious Disease Mortality Map</h1>
                 <form id="loginForm" action="login.php" method="POST" enctype="multipart/form-data">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" placeholder="Username" required>
+                    <label for="email">Email</label>
+                    <input type="text" name="email" placeholder="Email" required>
+
                     <label for="password">Password</label>
                     <input type="password" name="password" placeholder="Password" required>
-                        <div class="container">
-                            <?php if (!empty($error)): ?>
-                                <div style="color: red; font-weight: bold; margin-left: -10px; margin-top: -10px; margin-bottom: -30px; text-align: left;">
-                                    <?php echo $error; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+
+                    <?php if (!empty($error)): ?>
+                        <p style = "color: red;">
+                            <?php echo $error; ?>
+                        </p>
+                    <?php endif; ?>	
+
                     <button class="btn btn-primary" type="submit">Login</button>
                 </form>
                 <div class="signup-link">
-                    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+                    <p>Don't have an account? <a href="signup.php">Sign up</a></p>
                 </div>
             </div>
         </section>

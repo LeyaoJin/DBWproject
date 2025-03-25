@@ -1,18 +1,56 @@
 <?php
-//    En prinicpio html funciona, debemos cambiar medidas recuadro y caracteristicas de la educacion
+    include 'config.php';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        
-        $name = $_POST['name'] ?? 'Not received';
-        $surname = $_POST['surname'] ?? 'Not received';
-        $username = $_POST['username'] ?? 'Not received';
-        $email = $_POST['email'] ?? 'Not received';
-        $password = $_POST['password'] ?? 'Not received';
-        $birth = $_POST['birthdate'] ?? 'Not received';
-        $education = $_POST['education'] ?? 'Not received';
-       echo $name;
-        
-    }
+        // Here we get all the information from the user. 
+        $name = $_POST['name'];
+        $surname = $_POST['surname'];
+        $username = $_POST['username'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $birth = $_POST['birthdate'];
+        $education = $_POST['education'];
+        $gender = $_POST['gender']; 
+        $role = "user";
+        $error = "";
 
+        // Here we will check if the email is already on our database.
+        $emailQuery = $conn -> prepare("SELECT * FROM users WHERE email = ?");
+		$emailQuery -> bind_param("s", $email);
+		$emailQuery -> execute();
+		$emailResult = $emailQuery -> get_result();
+
+		// We will then check that there were no errors in connecting to the database.
+		if (!$emailResult) {
+			$error = "Query failed: " . $conn->error;
+		}
+
+        // If we get 0 rows it means we don't have this email registered and we can proceed.
+        elseif ($emailResult->num_rows == 0){
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $userInfo = $conn -> prepare("INSERT INTO users (username, email, password, first_name, surname, education_level, gender, date_of_birth, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            
+            if (!$userInfo) {
+                die("Prepare failed: " . $conn->error);
+            }
+
+            $userInfo->bind_param("sssssssss", $username, $email, $hashedPassword, $name, $surname, $education, $gender, $birth, $role);
+            
+            if ($userInfo->execute()) {
+                // To user page :)
+            } else {
+                $error = "Error: " . $stmt->error;
+            }
+            
+            $userInfo->close();
+        }
+        // If we already have the email registered, we will return an error. 
+        else{
+            $error = "This email is already registered. \nPlease try another email.";
+        }
+
+        $emailQuery->close();
+    }
+    $conn -> close(); 
     
 ?>
 
@@ -88,6 +126,11 @@
             <div class="gradient-overlay"></div>
             <div class="signup-container">
                 <h1>Sign Up for Infectious Disease Mortality Map</h1>
+                <?php if (!empty($error)): ?>
+                    <p style = "color: red;">
+                        <?php echo $error; ?>
+                    </p>
+                <?php endif; ?>	
                 <form id="signupForm" action="signup.php" method="POST" enctype="multipart/form-data"
                     onsubmit="return validateForm();" novalidate>
                     <div class="form-group">
@@ -130,17 +173,28 @@
                         <input type="date" id="birthdate" name="birthdate" required>
                         <small class="error-msg" id="birthdateError"></small>
                     </div>
+
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender">
+                            <option value="" disabled selected>Select your gender</option>
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <small class="error-msg" id="genderError"></small>
+                    </div>
         
                     <div class="form-group">
                         <label for="education">Education Level</label>
                         <select id="education" name="education">
                             <option value="" disabled selected>Education level</option>
-                            <option value="high_school">High School</option>
-                            <option value="associate">Associate Degree</option>
-                            <option value="bachelor">Bachelor's Degree</option>
-                            <option value="master">Master's Degree</option>
-                            <option value="phd">PhD or Doctorate</option>
-                            <option value="other">Other</option>
+                            <option value="High School">High School</option>
+                            <option value="Associate Degree">Associate Degree</option>
+                            <option value="Bachelor's Degree">Bachelor's Degree</option>
+                            <option value="Master's Degree">Master's Degree</option>
+                            <option value="Doctorate">PhD or Doctorate</option>
+                            <option value="Other">Other</option>
                         </select>
                         <small class="error-msg" id="educationError"></small>
                     </div>

@@ -1,4 +1,4 @@
-<!--?php
+<?php
     include 'config.php';
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $total_score = 0;
@@ -40,7 +40,7 @@
 
     $conn->close();
 
-?--> 
+?>
 
 <!DOCTYPE html>
 <html lang="en">

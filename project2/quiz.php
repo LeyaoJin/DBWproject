@@ -1,12 +1,20 @@
 <?php
     include 'config.php';
+
+    // If we are starting the quiz, we will set current question to 0. 
+    if (!isset($_SESSION['current_question'])) {
+        $_SESSION['current_question'] = 0;
+    }
+
     // This returns a result_Set if the query is successful. 
     $questionQuery = "SELECT idQuestion, question_text FROM questions";
     $questionResult = $conn -> query($questionQuery);
+    
     // Here we check if the query was successful, handling the error if it is not
     if (!$questionResult) {
         die("Error");
     }
+    
     // Here we get all the questions and store them in an associative array.  
     $questions = $questionResult->fetch_all(MYSQLI_ASSOC);
 ?> 
@@ -53,6 +61,70 @@
         <!-- Modernizr JS -->
         <script src="js/modernizr-2.6.2.min.js"></script>
         <title>Login - InDiMoMap</title>
+
+        <script>
+            let currentQuestion = 0;
+
+            function showNextQuestion() {
+                const questions = document.querySelectorAll('.question');
+                questions[currentQuestion].style.display = 'none';
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    questions[currentQuestion].style.display = 'block';
+                    if (currentQuestion === questions.length - 1) {
+                        document.getElementById('next-btn').innerText = 'Submit';
+                    }
+                } else {
+                    document.getElementById('quizForm').submit();
+                }
+            }
+
+            function enableNextButton(questionIndex) {
+                const nextButton = document.getElementById('next' + questionIndex);
+                nextButton.disabled = false;  // Enable the button when an option is selected
+            }
+
+            window.onload = function() {
+                const questions = document.querySelectorAll('.question');
+                questions.forEach((q, index) => {
+                    if (index !== 0) q.style.display = 'none';
+                    
+                    // Disable all Next buttons initially
+                    const nextButton = q.querySelector('button');
+                    if (nextButton) nextButton.disabled = true;
+                });
+            };
+        </script>
+
+        <style>
+            
+            input[type="radio"] {
+                transform: scale(1.5);
+                margin-right: 10px; 
+            }
+            .button-container {
+                text-align: center; /* Centers the button */
+                margin-top: 20px; /* Adds some space above the button */
+            }
+
+           
+            .button-container button {
+                background-color: #52d3aa; 
+                color: white;
+                padding: 10px 20px; 
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            .button-container button:hover {
+                background-color: #52d3aa; 
+            }
+            
+        </style>
+
+
     </head>
     <body>
         <header role="banner" id="fh5co-header"  class="navbar-fixed-top fh5co-animated slideInDown">
@@ -112,12 +184,11 @@
                             foreach ($answers as $answer) {
                                 $answer_id = $answer['idAnswer'];
                                 $answer_text = htmlspecialchars($answer['answer_text']);
-                                echo "<input type='radio' name='q$question_id' value='$answer_id' onclick='showNextButton($index)'> $answer_text<br>";
+                                echo "<input type='radio' name='q$question_id' value='$answer_id' onclick='enableNextButton($index)'> $answer_text<br>";
                             }
                             echo "<div class='button-container'>";
                             if ($index < $num_questions - 1) {
-                                echo "<button type='button' id='next$index' onclick='nextQuestion($index)'>Next</button>";
-                            } 
+                                echo "<button type='button' id='next$index' onclick='showNextQuestion()'>Next</button>";                            } 
                             else {
                                 echo "<button type='submit' id='next$index'>Submit</button>";
                             }
@@ -129,6 +200,7 @@
             </div>
         </section>
 
+        
 
         <!-- jQuery -->
         <script src="js/jquery.min.js"></script>

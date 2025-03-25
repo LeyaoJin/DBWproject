@@ -583,7 +583,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (isSignupPage) {
         console.log("📄 Running registration field validation");
 
-        const fields = ["name", "surname", "username", "email", "password", "confirmPassword",  "birthdate", "education"];
+        const fields = ["name", "surname", "username", "email", "password", "confirmPassword",  "birthdate", "gender", "education"];
         
          function validateField(field) {
             const value = document.getElementById(field).value.trim();
@@ -627,6 +627,15 @@ document.addEventListener("DOMContentLoaded", function() {
 					return false;
 				}
 
+			}
+
+			// Montse -> added check for the gender
+			if (field === "gender") {
+				const selectElement = document.getElementById(field);
+				if (selectElement.selectedIndex === 0) {
+					errorMsg.textContent = "Please select your gender.";
+					return false;
+				}
 			}
 
 			// Montse -> added check for the education
