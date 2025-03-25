@@ -10,6 +10,7 @@
     // Here we get all the questions and store them in an associative array.  
     $questions = $questionResult->fetch_all(MYSQLI_ASSOC);
 ?> 
+
 <!DOCTYPE html>
 <html lang="en">
     <head>

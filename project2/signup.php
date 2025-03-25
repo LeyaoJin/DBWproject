@@ -1,5 +1,5 @@
 <?php
-   
+//    En prinicpio html funciona, debemos cambiar medidas recuadro y caracteristicas de la educacion
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $name = $_POST['name'] ?? 'Not received';

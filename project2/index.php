@@ -131,13 +131,13 @@
 										<button id="submit-btn" class="btn btn-primary" type="button" onclick="applyFilter(event)">Search</button>
 									</div>
 								</div>
-								<div class="container">
-									<?php if (!empty($error)): ?>
-										<div style="color: red; font-weight: bold; text-align: center; margin-top: -10px; margin-bottom: -20px;">
-											<?php echo $error; ?>
-										</div>
-									<?php endif; ?>
-								</div>
+								
+								<?php if (!empty($error)): ?>
+									<p style = "color: red;">
+										<?php echo $error; ?>
+									</p>
+								<?php endif; ?>	
+
 								<div class="filter-btn">
 									<button id="filter-btn" class="filter-btn btn btn-primary" type="button">Advanced Filters</button>
 									<div id="filter-dropdown" class="filter-dropdown" style="display: none;">
@@ -166,7 +166,7 @@
 										<label for="search-country">Country:</label>
 										<input type="text" id="search-country" name="country" class="form-control" placeholder="Enter country name">
 										<button class="btn btn-primary" type="button" onclick="applyFilter(event)">Apply</button>
-									</div>
+									</div> 
 								</div>
 							</div>
 						</form>

@@ -535,14 +535,6 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0px;
 }
 
-
-
-.error-message {
-    color: red;
-    margin-top: 5px; 
-    display: none; 
-}
-
 .shake {
     animation: shake 0.3s ease-in-out;
 }
@@ -821,7 +813,7 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     justify-content: center; 
     align-items: center;    
-    height: 170vh;           
+    /* height: 170vh;            */
     background-image: repeating-linear-gradient(to bottom right, #3f95ea 0%, #52d3aa 100%);
     background-image: -ms-repeating-linear-gradient(top left, #3f95ea 0%, #52d3aa 100%);
 }
@@ -835,6 +827,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 90%; 
     text-align: center; 
 }
+
 #signupForm label {
   display: block;
   font-weight: bold;
@@ -842,13 +835,26 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: -5px;
   margin-top: 2px;
 }
-#signupForm input {
+
+#signupForm input, #signupForm select {
     width: 100%; 
     padding: 12px;
     margin: 15px 0; 
     border: 1px solid #ccc;
     border-radius: 8px; 
     box-sizing: border-box;
+    background-color: white;
+}
+
+#signupForm select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px; 
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><polygon points="0,0 10,10 20,0"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
 }
 
 #signupForm .btn {
@@ -879,13 +885,9 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: -15px;
 }
 
-.form-group {
-    margin: 0px;
-}
-
-#educationLevel {
+/* #educationLevel {
     margin: 8px;
-}
+} */
 
 #introquiz {
     display: flex;
