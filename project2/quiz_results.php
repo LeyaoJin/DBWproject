@@ -98,12 +98,45 @@
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="index.php" data-nav-section="home" class="external"><span>Home</span></a></li>
-                            <li><a href="map.html" data-nav-section="map" class="external"><span>Map</span></a></li>
-                            <li class="active"><a href="introquiz.html" data-nav-section="quiz" class="external"><span>Quiz</span></a></li>
-                            <li><a href="index.php" data-nav-section="team" class="external"><span>Team</span></a></li>
-                            <li><a href="index.php" data-nav-section="contact" class="external"><span>Contact</span></a>
+                            <li class="active"><a href="introquiz.php" data-nav-section="quiz" class="external"><span>Quiz</span></a></li>
+                            <li><a href="index.php#fh5co-team" data-nav-section="team" class="external"><span>Team</span></a></li>
+                            <li><a href="index.php#fh5co-team" data-nav-section="contact" class="external"><span>Contact</span></a>
                             </li>
-                            <li><a href="login.php" data-nav-section="login" class="external"><span>Login</span></a></li>
+                            <?php
+								session_start();
+								include 'config.php'; 
+								
+								// Check if user is logged in by verifying the session
+								if (isset($_SESSION['email'])) {
+									
+									// echo '<li><a href="personal.php" class="external"><span>User</span></a></li>';
+									$email = $_SESSION['email'];
+
+									// Now we get the name from the user 
+									$userQuery = $conn->prepare("SELECT first_name FROM users WHERE email = ?");
+									$userQuery->bind_param("s", $email);
+									$userQuery->execute();
+									$userResult = $userQuery->get_result();
+
+									if ($userResult->num_rows > 0) {
+										$user = $userResult->fetch_assoc();
+										$name = $user['first_name'];
+										
+										// Display user's name and link to personal.php
+										echo '<li><a href="personal.php"  class="external"><span>' . $name . '</span></a></li>';
+									} 
+									// In case something didn't work we will show the log in page. 
+									else {
+										echo '<li><a href="login.php" data-nav-section="login" class="external"><span>Login</span></a></li>';
+									}
+
+									$userQuery->close();
+									$conn->close();
+								} else {
+									// If not logged in, show the login option
+									echo '<li><a href="login.php" data-nav-section="login" class="external"><span>Login</span></a></li>';
+								}
+							?>
                         </ul>
                     </div>
                 </nav>

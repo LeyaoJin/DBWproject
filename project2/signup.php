@@ -115,10 +115,9 @@
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="index.php" data-nav-section="home" class="external"><span>Home</span></a></li>
-                            <li><a href="map.html" data-nav-section="map" class="external"><span>Map</span></a></li>
-                            <li><a href="introquiz.html" data-nav-section="quiz" class="external"><span>Quiz</span></a></li>
+                            <li><a href="introquiz.php" data-nav-section="quiz" class="external"><span>Quiz</span></a></li>
                             <li><a href="index.php#fh5co-team" data-nav-section="team" class="external"><span>Team</span></a></li>
-                            <li><a href="index.php#fh5co-team" data-nav-section="contact" class="external"><span>Contact</span></a></li>
+                            <li><a href="index.php#fh5co-contact" data-nav-section="contact" class="external"><span>Contact</span></a></li>
                             <li><a href="login.php" data-nav-section="login" class="external"><span>Login</span></a></li>
                         </ul>
                     </div>

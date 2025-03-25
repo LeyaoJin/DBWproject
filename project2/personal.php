@@ -1,3 +1,37 @@
+<?php
+    session_start();
+    include 'config.php';
+    ini_set('display_errors', 1); // Display errors on the screen
+    ini_set('display_startup_errors', 1); // Show startup errors
+    error_reporting(E_ALL);
+    // Just in case we will check we have started a session with the email
+    if (isset($_SESSION['email'])) {
+        $email = $_SESSION['email'];
+
+    } 
+    // If not logged in, redirect to login page
+    else {
+        header("Location: login.php");
+        exit();
+    }
+
+    $userData = $conn->prepare("SELECT username, first_name, surname, date_of_birth, education_level FROM users WHERE email = ?");
+    $userData -> bind_param("s", $email);
+    $userData -> execute();
+    $userResult = $userData->get_result();
+    if ($userResult->num_rows > 0) {
+        $user = $userResult->fetch_assoc(); 
+        $username = $user['username'];
+        $name = $user['first_name'];
+        $surname = $user['surname'];
+        $birthday = $user['date_of_birth'];
+        $education = $user['education_level'];
+    } 
+    
+
+    $userData -> close();
+?>  
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -50,16 +84,15 @@
                         <!-- Mobile Toggle Menu Button -->
                         <a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle" data-toggle="collapse" data-target="#navbar"
                             aria-expanded="false" aria-controls="navbar"><i></i></a>
-                        <a class="navbar-brand" href="index.html">InDiMoMap</a>
+                        <a class="navbar-brand" href="index.php">InDiMoMap</a>
                     </div>
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-right">
-                            <li class="active"><a href="index.html" data-nav-section="home" class="external"><span>Home</span></a></li>
-                            <li><a href="map.html" data-nav-section="map" class="external"><span>Map</span></a></li>
-                            <li><a href="quiz.html" data-nav-section="quiz" class="external"><span>Quiz</span></a></li>
-                            <li><a href="index.html#team"class="external"><span>Team</span></a></li>
-                            <li><a href="index.html#contact" data-nav-section="contact" class="external"><span>Contact</span></a></li>
-                            <li><a href="login.html" data-nav-section="login" class="external"><span>Login</span></a></li>
+                            <li><a href="index.php" data-nav-section="home" class="external"><span>Home</span></a></li>
+                            <li><a href="introquiz.php" data-nav-section="quiz" class="external"><span>Quiz</span></a></li>
+                            <li><a href="index.php#fh5co-team"class="external"><span>Team</span></a></li>
+                            <li><a href="index.php#fh5co-contact" data-nav-section="contact" class="external"><span>Contact</span></a></li>
+                            <!-- <li><a href="login.html" data-nav-section="login" class="external"><span>Login</span></a></li> -->
                         </ul>
                     </div>
                 </nav>
@@ -79,17 +112,22 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="#search-history" onclick="showSection('search-history')">Search History</a>
                             </li>
+                            <li class="nav-item">
+                                <form action="logout.php" method="post">
+                                    <button type="submit" class="btn btn-danger w-100">Log Off</button>
+                                </form>
+                            </li>
                         </ul>
                     </nav>
 
                     <main class="col-md-8 ml-sm-auto col-lg-9 px-4 py-4">
                         <div id="personal-info" class="account-section">
                             <h1>Personal Information</h1>
-                            <p>Username: John Doe</p>
-                            <p>Name: John Doe</p>
-                            <p>Email: john@example.com</p>
-                            <p>Birthday: Jeje</p>
-                            <p>Educational level: Jojo</p>
+                            <p>Username: <?php echo htmlspecialchars($username); ?></p>
+                            <p>Name: <?php echo htmlspecialchars($name) . ' ' . htmlspecialchars($surname); ?></p>
+                            <p>Email: <?php echo htmlspecialchars($email); ?></p>
+                            <p>Birthday:  <?php echo htmlspecialchars($birthday); ?></p>
+                            <p>Educational level: <?php echo htmlspecialchars($education); ?></p>
                         </div>
 
                         <div id="search-history" class="account-section" style="display:none;">

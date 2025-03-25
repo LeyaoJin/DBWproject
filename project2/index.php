@@ -10,10 +10,12 @@
 		$diseaseQuery -> bind_param("s", $searchTerm);
 		$diseaseQuery -> execute();
 		$diseaseResult = $diseaseQuery -> get_result();
+		
 		// We will then check that there were no errors in connecting to the database.
 		if (!$diseaseResult) {
 			$error = "Query failed: " . $conn->error;
 		}
+		
 		// If our query doesn't return any results (rows = 0), then we will check if the input corresponds to a pathogen.
 		elseif($diseaseResult->num_rows == 0){
 			$pathogenQuery = $conn -> prepare("SELECT * FROM pathogen WHERE pathogen_name LIKE ?");
@@ -29,15 +31,40 @@
 				$error = "$query is not found in our database. Please try again.";
 			}
 			else{
-				// TO DO: transform pathogen to disease and send to map file 
-				header("Location: temp_file.php?query=" . urlencode($query) . "&type=pathogen");
-                exit();
+				// Here we get the associated diseases to our pathogen. 
+				$row = $pathogenResult->fetch_assoc(); 
+				$pathogen_id = $row['ncbi_taxon_id'];
+				$path_diseaseQuery = $conn -> prepare("SELECT idDisease FROM pathogen_has_disease WHERE ncbi_taxon_id = ?");
+				$path_diseaseQuery -> bind_param("s", $pathogen_id);
+				$path_diseaseQuery -> execute();
+				$path_diseaseResult = $path_diseaseQuery -> get_result();
+
+				// Then we check that the pathogen has an associated disease. 
+				if($path_diseaseResult -> num_rows != 1){
+					$error = "This pathogen has multiple associated diseases. Please search a specific disease.";
+				}
+
+				else{
+					$row = $path_diseaseResult->fetch_assoc();
+					$diseaseID = $row['idDisease'];
+					$diseaseQuery = $conn -> prepare("SELECT disease_name FROM diseases WHERE idDisease = ?");
+					$diseaseQuery -> bind_param("s", $diseaseID);
+					$diseaseQuery -> execute();
+					$diseaseResult = $diseaseQuery -> get_result();
+					$diseaseRow = $diseaseResult->fetch_assoc();
+					$diseaseName = $diseaseRow['disease_name'];
+					header("Location: heres_a_map.html?disease=" . urlencode($diseaseName));
+                	exit();
+				}
+				
 			}
 		}
+		
 		//In reality we only want to have one result, if the input is too broad and the LIKE command returns more than 1 disease, we won't accept it
 		else if ($diseaseResult->num_rows == 1){
-			//TO DO: send the disease to the map file
-			header("Location: temp_file.php?query=" . urlencode($query) . "&type=disease");
+			$row = $diseaseResult->fetch_assoc(); 
+			$diseaseName = $row['disease_name'];
+			header("Location: heres_a_map.html?disease=" . urlencode($diseaseName));
             exit();
 		}
 		else{
@@ -99,11 +126,45 @@
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav navbar-right">
 							<li class="active"><a href="index.php" data-nav-section="home" class="external"><span>Home</span></a></li>
-							<li><a href="map.html" data-nav-section="map" class="external"><span>Map</span></a></li>
-							<li><a href="introquiz.html" data-nav-section="quiz" class="external"><span>Quiz</span></a></li>
-							<li><a href="index.php#fh5co-team" data-nav-section="team"><span>Team</span></a></li>
-							<li><a href="index.php#fh5co-contact" data-nav-section="contact"><span>Contact</span></a></li>
-							<li><a href="login.php" data-nav-section="login" class="external"><span>Login</span></a></li>
+							<li><a href="introquiz.php" data-nav-section="quiz" class="external"><span>Quiz</span></a></li>
+							<li><a href="#" data-nav-section="team"><span>Team</span></a></li>
+							<li><a href="#" data-nav-section="contact"><span>Contact</span></a></li>
+
+							<?php
+								session_start();
+								include 'config.php'; 
+								
+								// Check if user is logged in by verifying the session
+								if (isset($_SESSION['email'])) {
+									
+									// echo '<li><a href="personal.php" class="external"><span>User</span></a></li>';
+									$email = $_SESSION['email'];
+
+									// Now we get the name from the user 
+									$userQuery = $conn->prepare("SELECT first_name FROM users WHERE email = ?");
+									$userQuery->bind_param("s", $email);
+									$userQuery->execute();
+									$userResult = $userQuery->get_result();
+
+									if ($userResult->num_rows > 0) {
+										$user = $userResult->fetch_assoc();
+										$name = $user['first_name'];
+										
+										// Display user's name and link to personal.php
+										echo '<li><a href="personal.php"  class="external"><span>' . $name . '</span></a></li>';
+									} 
+									// In case something didn't work we will show the log in page. 
+									else {
+										echo '<li><a href="login.php" data-nav-section="login" class="external"><span>Login</span></a></li>';
+									}
+
+									$userQuery->close();
+									$conn->close();
+								} else {
+									// If not logged in, show the login option
+									echo '<li><a href="login.php" data-nav-section="login" class="external"><span>Login</span></a></li>';
+								}
+							?>
 						</ul>
 					</div>
 				</nav>
@@ -126,7 +187,7 @@
 							<div class="search_container to-animate">
 								<div class="search_bar">
 									<i class="icon-search"></i>
-									<input type="text" id="search-bar" class="form-control" placeholder="Search diseases, locations...">
+									<input type="text" id="search-bar" class="form-control" placeholder="Search diseases or pathogens">
 									<div class="submit-btn">
 										<button id="submit-btn" class="btn btn-primary" type="button" onclick="applyFilter(event)">Search</button>
 									</div>
